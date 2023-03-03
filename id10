@@ -1,0 +1,19 @@
+SecurityEvent
+| where EventSourceName == "Microsoft-Windows-Sysmon" | where EventID == 10
+| extend EVD = parse_xml(EventData)
+| extend EventDetail = EVD.EventData.Data
+| extend EventType = "Process Access"
+| extend RuleName = EventDetail.[0].["#text"],
+UtcTime = EventDetail.[1].["#text"],
+SourceProcessGuid = EventDetail.[2].["#text"],
+SourceProcessId = EventDetail.[3].["#text"],
+SourceThreadId = EventDetail.[4].["#text"],
+SourceImage = EventDetail.[5].["#text"],
+TargetProcessGuid = EventDetail.[6].["#text"],
+TargetProcessId = EventDetail.[7].["#text"],
+TargetImage = EventDetail.[8].["#text"],
+GrantedAccess = EventDetail.[9].["#text"],
+CallTrace = EventDetail.[10].["#text"],
+SourceUser = EventDetail.[11].["#text"],
+TargetUser = EventDetail.[12].["#text"]
+| project TimeCollected,Computer,EventID,EventType,tostring(RuleName),tostring(UtcTime),tostring(SourceProcessGuid),tostring(SourceProcessId),tostring(SourceThreadId),tostring(SourceImage),tostring(TargetProcessGuid),tostring(TargetProcessId),tostring(TargetImage),tostring(GrantedAccess),tostring(CallTrace),tostring(SourceUser),tostring(TargetUser)

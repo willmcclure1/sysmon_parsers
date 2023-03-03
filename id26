@@ -1,0 +1,15 @@
+SecurityEvent
+| where EventSourceName == "Microsoft-Windows-Sysmon" | where EventID == 26
+| extend EVD = parse_xml(EventData)
+| extend EventDetail = EVD.EventData.Data
+| extend EventType = "File Delete"
+| extend RuleName = EventDetail.[0].["#text"],
+UtcTime = EventDetail.[1].["#text"],
+ProcessGuid = EventDetail.[2].["#text"],
+ProcessId = EventDetail.[3].["#text"],
+User = EventDetail.[4].["#text"],
+Image = EventDetail.[5].["#text"],
+TargetFilename = EventDetail.[6].["#text"],
+Hashes = EventDetail.[7].["#text"],
+IsExecutable = EventDetail.[8].["#text"]
+| project TimeGenerated,Computer,EventID,tostring(RuleName),EventType,tostring(UtcTime),tostring(ProcessGuid),tostring(ProcessId),tostring(User),tostring(Image),tostring(TargetFilename),tostring(Hashes),tostring(IsExecutable)

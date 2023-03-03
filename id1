@@ -1,0 +1,31 @@
+SecurityEvent
+| where EventSourceName == "Microsoft-Windows-Sysmon" and EventID == 1
+| extend EVD = parse_xml(EventData)
+| extend EventDetail = EVD.EventData.Data
+| extend EventType = "Process Creation" 
+| extend RuleName = EventDetail.[0].["#text"],
+UtcTime = EventDetail.[1].["#text"],
+ProcessGuid = EventDetail.[2].["#text"],
+ProcessId = EventDetail.[3].["#text"],
+Image = EventDetail.[4].["#text"],
+FileVersion = EventDetail.[5].["#text"],
+Description = EventDetail.[6].["#text"],
+Product = EventDetail.[7].["#text"],
+Company = EventDetail.[8].["#text"],
+OriginalFileName = EventDetail.[9].["#text"],
+CommandLine = EventDetail.[10].["#text"],
+CurrentDirectory = EventDetail.[11].["#text"],
+User = EventDetail.[12].["#text"],
+LogonGuid = EventDetail.[13].["#text"],
+LogonId = EventDetail.[14].["#text"],
+TerminalSessionId = EventDetail.[15].["#text"],
+IntegrityLevel = EventDetail.[16].["#text"],
+Hashes = EventDetail.[17].["#text"],
+ParentProcessGuid = EventDetail.[18].["#text"],
+ParentProcessId = EventDetail.[19].["#text"],
+ParentImage = EventDetail.[20].["#text"],
+ParentCommandLine = EventDetail.[21].["#text"],
+ParentUser = EventDetail.[22].["#text"]
+| project TimeCollected,Computer,EventID,EventType,tostring(RuleName), tostring(UtcTime),tostring(ProcessGuid),tostring(ProcessId), tostring(Image), tostring(FileVersion), tostring(Description), tostring(Product), tostring(Company),
+tostring(OriginalFileName),tostring(CommandLine),tostring(CurrentDirectory),tostring(User),tostring(LogonGuid),tostring(LogonId),tostring(TerminalSessionId),tostring(IntegrityLevel),tostring(Hashes),
+tostring(ParentProcessGuid),tostring(ParentProcessId),tostring(ParentImage),tostring(ParentCommandLine),tostring(ParentUser)

@@ -1,0 +1,13 @@
+SecurityEvent
+| where EventSourceName == "Microsoft-Windows-Sysmon" | where EventID == 17
+| extend EVD = parse_xml(EventData)
+| extend EventDetail = EVD.EventData.Data
+| extend RuleName = EventDetail.[0].["#text"],
+EventType = EventDetail.[1].["#text"],
+UtcTime = EventDetail.[2].["#text"],
+ProcessGuid = EventDetail.[3].["#text"],
+ProcessId = EventDetail.[4].["#text"],
+PipeName = EventDetail.[5].["#text"],
+Image = EventDetail.[6].["#text"],
+User = EventDetail.[7].["#text"]
+| project TimeCollected,Computer,EventID,tostring(RuleName),tostring(EventType),tostring(UtcTime),tostring(ProcessGuid),tostring(ProcessId),tostring(PipeName),tostring(Image),tostring(User)

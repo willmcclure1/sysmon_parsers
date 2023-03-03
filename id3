@@ -1,0 +1,23 @@
+SecurityEvent
+| where EventSourceName == "Microsoft-Windows-Sysmon" and EventID == 3 //| extend EventData = tostring(split(EventData, ",")[0])
+| extend EVD = parse_xml(EventData)
+| extend EventDetail = EVD.EventData.Data 
+| extend RuleName = EventDetail.[0].["#text"],
+UtcTime = EventDetail.[1].["#text"],
+ProcessGuid = EventDetail.[2].["#text"],
+ProcessId = EventDetail.[3].["#text"],
+Image = EventDetail.[4].["#text"],
+User = EventDetail.[5].["#text"],
+Protocol = EventDetail.[6].["#text"],
+Initiated = EventDetail.[7].["#text"],
+SourceIsIpv6 = EventDetail.[8].["#text"],
+SourceIp = EventDetail.[9].["#text"],
+SourceHostname = EventDetail.[10].["#text"],
+SourcePort = EventDetail.[11].["#text"],
+SourcePortName = EventDetail.[12].["#text"],
+DestinationIsIpv6 = EventDetail.[13].["#text"],
+DestinationIp = EventDetail.[14].["#text"],
+DestinationHostname = EventDetail.[15].["#text"],
+DestinationPort = EventDetail.[16].["#text"],
+DestinationPortName = EventDetail.[17].["#text"]
+| project tostring(UtcTime),Computer,tostring(ProcessId),tostring(Image),tostring(User),tostring(Protocol),tostring(Initiated),tostring(SourceIsIpv6),tostring(SourceIp),tostring(SourceHostname),tostring(SourcePort),tostring(SourcePortName),tostring(DestinationIsIpv6),tostring(DestinationIp),tostring(DestinationHostname),tostring(DestinationPort),tostring(DestinationPortName)

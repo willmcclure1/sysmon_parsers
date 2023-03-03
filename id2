@@ -1,0 +1,15 @@
+SecurityEvent
+| where EventSourceName == "Microsoft-Windows-Sysmon" | where EventID == 2
+| extend EVD = parse_xml(EventData)
+| extend EventDetail = EVD.EventData.Data
+| extend EventType = "Process Changed a file creation time"
+| extend RuleName = EventDetail.[0].["#text"],
+UtcTime = EventDetail.[1].["#text"],
+ProcessGuid = EventDetail.[2].["#text"],
+ProcessId = EventDetail.[3].["#text"],
+Image = EventDetail.[4].["#text"],
+TargetFileName = EventDetail.[5].["#text"],
+CreationUtcTime = EventDetail.[6].["#text"],
+PreviousCreationUtcTime = EventDetail.[7].["#text"],
+User = EventDetail.[8].["#text"]
+| project TimeCollected,Computer,EventID,EventType,tostring(UtcTime),tostring(ProcessGuid),tostring(ProcessId),tostring(Image),tostring(TargetFileName),tostring(CreationUtcTime),tostring(PreviousCreationUtcTime),tostring(User)

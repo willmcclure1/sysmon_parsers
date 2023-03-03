@@ -1,0 +1,20 @@
+SecurityEvent
+| where EventSourceName == "Microsoft-Windows-Sysmon" | where EventID == 8
+| extend EVD = parse_xml(EventData)
+| extend EventDetail = EVD.EventData.Data
+| extend EventType = "Create Remote Thread"
+| extend RuleName = EventDetail.[0].["#text"],
+UtcTime = EventDetail.[1].["#text"],
+SourceProcessGuid = EventDetail.[2].["#text"],
+SourceProcessId = EventDetail.[3].["#text"],
+SourceImage = EventDetail.[4].["#text"],
+TargetProcessGuid = EventDetail.[5].["#text"],
+TargetProcessId = EventDetail.[6].["#text"],
+TargetImage = EventDetail.[7].["#text"],
+NewThreadId = EventDetail.[8].["#text"],
+StartAddress = EventDetail.[9].["#text"],
+StartModule = EventDetail.[10].["#text"],
+StartFunction = EventDetail.[11].["#text"],
+SourceUser = EventDetail.[12].["#text"],
+TargetUser = EventDetail.[13].["#text"]
+| project TimeCollected,Computer,EventID,EventType,tostring(RuleName),tostring(UtcTime),tostring(SourceProcessGuid),tostring(SourceProcessId),tostring(SourceImage),tostring(TargetProcessGuid),tostring(TargetProcessId),tostring(TargetImage),tostring(NewThreadId),tostring(StartAddress),tostring(StartModule),tostring(StartFunction),tostring(SourceUser),tostring(TargetUser)

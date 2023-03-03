@@ -1,0 +1,11 @@
+SecurityEvent | where EventID == 22
+| extend EVD = parse_xml(EventData) | extend EventDetail = EVD.EventData.Data
+| extend RuleName = EventDetail.[0].["#text"],
+UtcTime = EventDetail.[1].["#text"],
+ProcessGuid = EventDetail.[2].["#text"],
+ProcessId = EventDetail.[3].["#text"],
+QueryName = EventDetail.[4].["#text"],
+QueryStatus = EventDetail.[5].["#text"],
+QueryResults = EventDetail.[6].["#text"],
+Image = EventDetail.[7].["#text"]
+| project tostring(UtcTime),tostring(Computer),tostring(QueryName),tostring(QueryStatus),tostring(QueryResults),tostring(Image)

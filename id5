@@ -1,0 +1,12 @@
+SecurityEvent
+| where EventSourceName == "Microsoft-Windows-Sysmon" | where EventID == 5
+| extend EVD = parse_xml(EventData)
+| extend EventDetail = EVD.EventData.Data
+| extend EventType = "Process Terminated"
+| extend RuleName = EventDetail.[0].["#text"],
+UtcTime = EventDetail.[1].["#text"],
+ProcessGuid = EventDetail.[2].["#text"],
+ProcessId = EventDetail.[3].["#text"],
+Image = EventDetail.[4].["#text"],
+User = EventDetail.[5].["#text"]
+| project TimeCollected,Computer,EventID,EventType,tostring(UtcTime),tostring(ProcessGuid),tostring(ProcessId),tostring(Image),tostring(User)

@@ -1,0 +1,10 @@
+SecurityEvent
+| where EventSourceName == "Microsoft-Windows-Sysmon" and EventID == 4
+| extend EventType = "Sysmon Service state changed"
+| extend EVD = parse_xml(EventData)
+| extend EventDetail = EVD.EventData.Data
+| extend UtcTime = EventDetail.[0].["#text"],
+State = EventDetail.[1].["#text"],
+Version = EventDetail.[2].["#text"],
+SchemaVersion = EventDetail.[3].["#text"]
+| project TimeCollected,Computer,EventID,EventType,tostring(UtcTime),tostring(State),tostring(Version), tostring(SchemaVersion)

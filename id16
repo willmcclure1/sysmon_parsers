@@ -1,0 +1,9 @@
+SecurityEvent
+| where EventSourceName == "Microsoft-Windows-Sysmon" | where EventID == 16
+| extend EVD = parse_xml(EventData)
+| extend EventDetail = EVD.EventData.Data
+| extend EventType = "Sysmon Config change"
+| extend UtcTime = EventDetail.[0].["#text"],
+Configuration = EventDetail.[1].["#text"],
+ConfigurationFileHash = EventDetail.[2].["#text"]
+| project TimeCollected,Computer,EventID,EventType,tostring(UtcTime),tostring(Configuration),tostring(ConfigurationFileHash)

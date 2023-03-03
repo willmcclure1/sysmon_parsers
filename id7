@@ -1,0 +1,23 @@
+SecurityEvent
+| where EventSourceName == "Microsoft-Windows-Sysmon" | where EventID == 7
+| extend EVD = parse_xml(EventData)
+| extend EventDetail = EVD.EventData.Data
+| extend EventType = "Driver Loaded"
+| extend RuleName = EventDetail.[0].["#text"],
+UtcTime = EventDetail.[1].["#text"],
+ProcessGuid = EventDetail.[2].["#text"],
+ProcessId = EventDetail.[3].["#text"],
+Image = EventDetail.[4].["#text"],
+ImageLoaded = EventDetail.[5].["#text"],
+FileVersion = EventDetail.[6].["#text"],
+Description = EventDetail.[7].["#text"],
+Product = EventDetail.[8].["#text"],
+Company = EventDetail.[9].["#text"],
+OriginalFileName = EventDetail.[10].["#text"],
+Hashes = EventDetail.[11].["#text"],
+Signed = EventDetail.[12].["#text"],
+Signature = EventDetail.[13].["#text"],
+SignatureStatus = EventDetail.[14].["#text"],
+User = EventDetail.[15].["#text"]
+| project TimeCollected,Computer,EventID,EventType,tostring(RuleName),tostring(UtcTime),tostring(ProcessGuid),tostring(ProcessId),tostring(Image),tostring(ImageLoaded),tostring(FileVersion),tostring(Description),
+tostring(Description),tostring(Product),tostring(Company),tostring(OriginalFileName),tostring(Hashes),tostring(Signed),tostring(Signature),tostring(SignatureStatus),tostring(User)
